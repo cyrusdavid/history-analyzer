@@ -17,7 +17,16 @@ function App() {
         setData(parsed);
         const dates = Object.keys(parsed).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
         if (dates.length > 0) {
-          setSelectedDate(dates[0]);
+          try {
+            const hashVal = decodeURIComponent(window.location.hash.replace('#', '')).replace(/-/g, '/');
+            if (hashVal && parsed[hashVal]) {
+              setSelectedDate(hashVal);
+            } else {
+              setSelectedDate(dates[0]);
+            }
+          } catch(e) {
+            setSelectedDate(dates[0]);
+          }
         }
         setLoading(false);
       })
@@ -26,6 +35,25 @@ function App() {
         setLoading(false);
       });
   }, []);
+
+  useEffect(() => {
+    if (selectedDate) {
+      window.location.hash = encodeURIComponent(selectedDate.replace(/\//g, '-'));
+    }
+  }, [selectedDate]);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      try {
+        const hashVal = decodeURIComponent(window.location.hash.replace('#', '')).replace(/-/g, '/');
+        if (hashVal && data[hashVal]) {
+          setSelectedDate(hashVal);
+        }
+      } catch(e) {}
+    };
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, [data]);
 
   if (loading) {
     return (
