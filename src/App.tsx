@@ -24,7 +24,7 @@ function App() {
             } else {
               setSelectedDate(dates[0]);
             }
-          } catch(e) {
+          } catch (e) {
             setSelectedDate(dates[0]);
           }
         }
@@ -39,6 +39,7 @@ function App() {
   useEffect(() => {
     if (selectedDate) {
       window.location.hash = encodeURIComponent(selectedDate.replace(/\//g, '-'));
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, [selectedDate]);
 
@@ -49,7 +50,7 @@ function App() {
         if (hashVal && data[hashVal]) {
           setSelectedDate(hashVal);
         }
-      } catch(e) {}
+      } catch (e) { }
     };
     window.addEventListener('hashchange', handleHashChange);
     return () => window.removeEventListener('hashchange', handleHashChange);
@@ -93,9 +94,9 @@ function App() {
               <p className="text-xs text-blue-400/80 font-semibold tracking-wider uppercase mt-0.5">Timeline Analyzer</p>
             </div>
           </div>
-          
+
           <div className="w-full sm:w-80">
-            <DatePicker 
+            <DatePicker
               availableDates={availableDates}
               selectedDate={selectedDate}
               onSelectDate={setSelectedDate}
