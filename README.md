@@ -1,112 +1,156 @@
 # Chronos
 
-Chronos is a browser-history timeline viewer. It takes an exported browsing history CSV and turns it into a day-by-day activity timeline grouped by domain and short browsing sessions.
+> **Turn raw browser history into a clear, beautiful daily timeline.**
+
+Chronos helps you explore your browsing activity as a clean, session-based timeline so you can quickly understand **where your time went, what you visited, and how your day unfolded**.
+
+**Live demo:** [cyrusdavid.github.io/history-analyzer](https://cyrusdavid.github.io/history-analyzer/)
+
+## Try It Now
+
+* **Export your browser history** using [Export Chrome History](https://chromewebstore.google.com/detail/export-chrome-history/dihloblpkeiddiaojbagoecedbfpifdj)
+* **Open Chronos:** [Launch the app](https://cyrusdavid.github.io/history-analyzer/)
+* **Upload your CSV** to view your timeline
 
 ![Chronos screenshot](./Screenshot.jpg)
 
-## Features
+## Why Chronos?
 
-- Drag-and-drop CSV upload with file picker fallback
-- Automatic restore of the last uploaded CSV using IndexedDB
-- Date-based navigation with deep-linkable URL hash state
-- Session grouping by domain using a 15-minute threshold
-- Clean timeline cards with start time, end time, duration, and visited page titles
-- Domain exclusions for high-noise sources such as YouTube, Facebook, ChatGPT, Gemini, and Reddit
+Browser history is usually noisy, flat, and hard to scan.
+Chronos transforms an exported browsing-history CSV into a readable experience that feels more like a product dashboard than a browser settings page.
+
+With Chronos, you can:
+
+* **See your day at a glance** with a chronological timeline
+* **Group related visits into sessions** instead of scrolling through endless raw entries
+* **Focus on signal over noise** with built-in domain exclusions
+* **Jump between dates quickly** with URL-friendly navigation
+* **Keep your data local** with browser-only processing and storage
+
+---
+
+## What It Does
+
+Chronos takes a browser history export and turns it into:
+
+* a **day-by-day timeline**
+* grouped **sessions by domain**
+* readable cards showing:
+
+  * start time
+  * end time
+  * total duration
+  * visited page titles
+
+Instead of viewing hundreds of individual history rows, you get a structured story of your browsing activity.
+
+---
+
+## Core Features
+
+### Fast CSV import
+
+Drag and drop your exported history file, or use the file picker.
+
+### Session-based timeline
+
+Chronos groups adjacent visits from the same domain into short browsing sessions using a **15-minute threshold**.
+
+### Date navigation
+
+Browse activity by day and link directly to a specific date using the URL hash.
+
+### Smart noise reduction
+
+High-noise domains like YouTube, Facebook, ChatGPT, Gemini, and Reddit are excluded by default to keep the timeline focused.
+
+### Local-first persistence
+
+Your most recent uploaded CSV is stored in **IndexedDB**, so the app can restore it automatically on reload.
+
+### Zero backend
+
+Everything runs in the browser. No server. No account. No sync required.
+
+---
 
 ## How It Works
 
-Chronos parses rows from a browser history CSV, extracts the domain for each URL, filters excluded domains, sorts everything chronologically, and groups adjacent visits into session blocks.
+Chronos processes your browser history in a few simple steps:
 
-Each session block is defined by:
+1. **Parse** rows from a browsing-history CSV
+2. **Extract** the domain for each visited URL
+3. **Filter** excluded domains
+4. **Sort** visits chronologically
+5. **Group** nearby visits from the same domain into sessions
+6. **Render** the results as a clean daily timeline
 
-- the same domain
-- less than or equal to 15 minutes between visits
+A session is created when visits:
 
-The UI then renders those blocks into a vertical daily timeline showing:
+* belong to the **same domain**, and
+* occur within **15 minutes** of one another
 
-- domain name
-- start and end time
-- computed duration
-- page titles for the visits within the session
+This makes the output much easier to scan than raw browser history.
 
-## Getting Started
+---
 
+## Who It’s For
 
-### Exporting browser history
+Chronos is useful for:
 
+* people reviewing their browsing habits
+* researchers or analysts exploring browsing sessions
+* productivity-minded users who want more context than standard browser history provides
+* anyone who wants a more human-readable view of exported history data
 
-Use the [Export Chrome History](https://chromewebstore.google.com/detail/export-chrome-history/dihloblpkeiddiaojbagoecedbfpifdj) chrome extension.
+---
+## Privacy
 
-### Prerequisites
+Chronos is designed to run entirely in the browser.
 
-- Node.js 20+ recommended
-- npm
+* CSV parsing happens client-side
+* timeline generation happens client-side
+* uploaded data is stored locally in IndexedDB
+* there is **no backend or server-side storage**
 
-### Install
+### Important notes
+
+* timeline links are clickable and open the original URLs in a new tab
+* uploaded CSV data remains in IndexedDB until cleared from the UI
+
+---
+
+## Current Limitations
+
+Chronos is intentionally simple today. Current constraints include:
+
+* session grouping is based only on **domain + 15-minute threshold**
+* malformed dates rely on native `Date` parsing behavior
+* excluded domains are hardcoded in `src/lib/parser.ts`
+* data is browser-local and single-user
+* there is no import wizard, schema validation flow, or export feature yet
+* the interface is optimized for browsing activity, not deep analytics or reporting
+
+---
+
+## Product Direction
+
+Potential future improvements could include:
+
+* customizable exclusion rules
+* adjustable session thresholds
+* analytics and summaries
+* search and filters
+* exportable reports
+* richer import validation
+
+---
+
+## Development
+
+If you're working on Chronos locally, the standard development flow is:
 
 ```bash
 npm install
-```
-
-### Start the App
-
-```bash
 npm run dev
 ```
-
-Open the local Vite URL shown in the terminal.
-
-## Usage
-
-Chronos supports two ways of loading data:
-
-### Option 1: Upload a CSV
-
-Use the upload area in the UI to:
-
-- drag and drop a CSV file
-- open the file picker manually
-
-After a successful upload, the CSV contents are saved in IndexedDB and restored automatically on reload.
-
-### Option 2: Ship a Default File
-
-Place a CSV named `history.csv` in the `public/` directory:
-
-```text
-public/history.csv
-```
-
-If there is no saved upload in IndexedDB, the app will attempt to load this file on startup.
-
-
-## Data Persistence
-
-Uploaded files are stored locally in the browser using IndexedDB.
-
-What this means:
-
-- the latest uploaded CSV survives reloads
-- the saved data is local to that browser profile
-- there is no backend or server-side storage in this project
-
-You can remove the saved file from the UI with the clear action.
-
-## Privacy Notes
-
-Chronos runs entirely in the browser. CSV parsing and timeline generation happen client-side.
-
-Important caveat:
-
-- links in the timeline are clickable and open the original URLs in a new tab
-- uploaded CSV contents remain in IndexedDB until cleared
-
-## Current Behavior and Limitations
-
-- Session grouping is based only on domain + a 15-minute threshold
-- Invalid or malformed dates fall back to `new Date()` behavior during parsing
-- Excluded domains are hardcoded in `src/lib/parser.ts`
-- The app is single-user and browser-local
-- There is no import wizard, schema validation UI, or export flow yet
-- The timeline view is designed for browsing, not analytics or reporting
-
