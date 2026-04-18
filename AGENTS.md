@@ -17,6 +17,12 @@
 Co-Authored-By: Codex <codex@openai.com>
 ```
 
+## Git Workflow
+- After completing a code change, automatically create a git commit unless the user says not to commit
+- Keep commits focused to the requested task; avoid bundling unrelated files
+- Use concise conventional-style commit messages when possible
+- Do not push automatically
+
 ## Project Structure
 - `src/App.tsx` owns top-level loading, hash routing, and date selection flow
 - `src/components/` contains UI pieces such as `DatePicker` and `Timeline`
