@@ -19,6 +19,7 @@ function App() {
   const availableDates = Object.keys(data);
   const activeDay = selectedDate ? data[selectedDate] : null;
   const hasData = availableDates.length > 0;
+  const defaultHistoryUrl = `${import.meta.env.BASE_URL}history.csv`;
 
   const getPreferredDate = (parsed: Record<string, DayActivity>) => {
     const dates = Object.keys(parsed).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
@@ -50,7 +51,7 @@ function App() {
   };
 
   const loadDefaultHistory = async () => {
-    const parsed = await parseHistory('/history.csv');
+    const parsed = await parseHistory(defaultHistoryUrl);
     applyParsedData(parsed);
   };
 
@@ -85,7 +86,7 @@ function App() {
           return;
         }
 
-        const parsed = await parseHistory('/history.csv');
+        const parsed = await parseHistory(defaultHistoryUrl);
         if (!cancelled) {
           const dates = Object.keys(parsed).sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
           let nextSelectedDate = dates[0] ?? null;
@@ -123,7 +124,7 @@ function App() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [defaultHistoryUrl]);
 
   useEffect(() => {
     if (selectedDate) {
