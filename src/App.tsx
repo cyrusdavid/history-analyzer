@@ -242,30 +242,33 @@ function App() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-300 selection:bg-blue-500/30">
       <header className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/80 supports-[backdrop-filter]:bg-slate-950/60">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div className="flex items-center gap-4">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-3 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex min-w-0 items-center gap-4">
             <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-[0_0_20px_rgba(79,70,229,0.3)] ring-1 ring-white/10">
               <Activity className="text-white w-6 h-6" />
             </div>
-            <div>
+            <div className="min-w-0">
               <h1 className="text-2xl font-bold text-white tracking-tight">Chronos</h1>
               <p className="text-xs text-blue-400/80 font-semibold tracking-wider uppercase mt-0.5">Timeline Analyzer</p>
             </div>
           </div>
 
-          <div className="w-full space-y-3 sm:w-[28rem]">
+          <div className="grid w-full gap-3 lg:max-w-4xl lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-center">
             <HistoryUpload
               onFileSelect={handleFileSelect}
               onClear={handleClearUpload}
               fileName={uploadedFileName}
               isLoading={uploading}
               hasPersistedUpload={hasPersistedUpload}
+              compact
             />
-            <DatePicker
-              availableDates={availableDates}
-              selectedDate={selectedDate}
-              onSelectDate={setSelectedDate}
-            />
+            <div className="lg:min-w-[19rem]">
+              <DatePicker
+                availableDates={availableDates}
+                selectedDate={selectedDate}
+                onSelectDate={setSelectedDate}
+              />
+            </div>
           </div>
         </div>
       </header>
