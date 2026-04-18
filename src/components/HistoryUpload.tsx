@@ -20,6 +20,7 @@ export function HistoryUpload({
 }: HistoryUploadProps) {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [isDragging, setIsDragging] = useState(false);
+  const isCondensed = compact && Boolean(fileName);
 
   const openFileDialog = () => {
     if (!isLoading) {
@@ -33,13 +34,19 @@ export function HistoryUpload({
     onFileSelect(file);
   };
 
-  const wrapperClassName = compact
+  const wrapperClassName = isCondensed
     ? 'rounded-xl border border-slate-800/80 bg-slate-900/40 px-3 py-2 transition-all'
     : 'rounded-2xl border border-slate-800/80 bg-slate-900/50 p-4 transition-all';
 
-  const iconClassName = compact
+  const iconClassName = isCondensed
     ? 'rounded-lg bg-slate-800/80 p-1.5 text-blue-400'
     : 'mt-0.5 rounded-xl bg-slate-800/80 p-2.5 text-blue-400';
+
+  const title = isLoading
+    ? 'Loading CSV...'
+    : 'Drop a CSV here or choose a file';
+
+  const description = 'Upload an exported browser history CSV. The latest upload is saved in this browser and restored on reload.';
 
   return (
     <div
@@ -89,18 +96,29 @@ export function HistoryUpload({
         }}
       />
 
-      <div className={compact ? 'flex items-center gap-2.5' : 'flex items-start gap-3'}>
+      <div className={isCondensed ? 'flex items-center gap-2.5' : 'flex items-start gap-3'}>
         <div className={iconClassName}>
-          <FileUp className={compact ? 'h-4 w-4' : 'h-5 w-5'} />
+          <FileUp className={isCondensed ? 'h-4 w-4' : 'h-5 w-5'} />
         </div>
 
         <div className="min-w-0 flex-1">
-          <div className={compact ? 'flex min-h-[40px] flex-wrap items-center gap-1.5' : 'mt-3 flex flex-wrap items-center gap-2'}>
+          {!isCondensed ? (
+            <>
+              <p className="text-sm font-semibold text-white">
+                {title}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-400">
+                {description}
+              </p>
+            </>
+          ) : null}
+
+          <div className={isCondensed ? 'flex min-h-[40px] flex-wrap items-center gap-1.5' : 'mt-3 flex flex-wrap items-center gap-2'}>
             <button
               type="button"
               className={[
                 'inline-flex items-center rounded-lg bg-blue-600 font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60',
-                compact ? 'gap-1.5 px-2.5 py-1 text-[11px]' : 'gap-2 px-3 py-1.5 text-xs'
+                isCondensed ? 'gap-1.5 px-2.5 py-1 text-[11px]' : 'gap-2 px-3 py-1.5 text-xs'
               ].join(' ')}
               onClick={(event) => {
                 event.stopPropagation();
@@ -117,7 +135,7 @@ export function HistoryUpload({
                 type="button"
                 className={[
                   'inline-flex items-center rounded-lg border border-slate-700 bg-slate-900 font-semibold text-slate-200 transition hover:border-slate-600 hover:bg-slate-800 disabled:cursor-not-allowed disabled:opacity-60',
-                  compact ? 'gap-1.5 px-2.5 py-1 text-[11px]' : 'gap-2 px-3 py-1.5 text-xs'
+                  isCondensed ? 'gap-1.5 px-2.5 py-1 text-[11px]' : 'gap-2 px-3 py-1.5 text-xs'
                 ].join(' ')}
                 onClick={(event) => {
                   event.stopPropagation();
@@ -126,18 +144,18 @@ export function HistoryUpload({
                 disabled={isLoading}
               >
                 <Trash2 className="h-3.5 w-3.5" />
-                {compact ? 'Clear' : 'Clear Saved CSV'}
+                {isCondensed ? 'Clear' : 'Clear Saved CSV'}
               </button>
             ) : null}
 
-            {compact && fileName ? (
+            {isCondensed && fileName ? (
               <p className="min-w-0 flex-1 truncate text-[11px] text-slate-400">
                 <span className="font-medium text-slate-200">{fileName}</span>
               </p>
             ) : null}
           </div>
 
-          {!compact && fileName ? (
+          {!isCondensed && fileName ? (
             <p className="mt-3 truncate text-xs text-slate-300">
               Active file: <span className="font-medium text-white">{fileName}</span>
             </p>
