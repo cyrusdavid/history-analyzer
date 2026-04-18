@@ -13,17 +13,6 @@ Chronos is a browser-history timeline viewer. It takes an exported browsing hist
 - Clean timeline cards with start time, end time, duration, and visited page titles
 - Domain exclusions for high-noise sources such as YouTube, Facebook, ChatGPT, Gemini, and Reddit
 
-## Tech Stack
-
-- **Framework**: React 19
-- **Language**: TypeScript
-- **Build Tool**: Vite 8
-- **Styling**: Tailwind CSS
-- **Animation**: Framer Motion
-- **CSV Parsing**: Papa Parse
-- **Date UI**: react-datepicker + date-fns
-- **Persistence**: IndexedDB
-
 ## How It Works
 
 Chronos parses rows from a browser history CSV, extracts the domain for each URL, filters excluded domains, sorts everything chronologically, and groups adjacent visits into session blocks.
@@ -40,11 +29,13 @@ The UI then renders those blocks into a vertical daily timeline showing:
 - computed duration
 - page titles for the visits within the session
 
-## Screenshot
-
-The screenshot above shows the main loaded state of the app: a compact header with upload controls and date navigation, followed by timeline cards for each grouped browsing session.
-
 ## Getting Started
+
+
+### Exporting browser history
+
+
+Use the [Export Chrome History](https://chromewebstore.google.com/detail/export-chrome-history/dihloblpkeiddiaojbagoecedbfpifdj) chrome extension.
 
 ### Prerequisites
 
@@ -88,29 +79,6 @@ public/history.csv
 
 If there is no saved upload in IndexedDB, the app will attempt to load this file on startup.
 
-## CSV Format
-
-Chronos currently expects a header-based CSV with fields matching this shape:
-
-| Column | Required | Notes |
-|---|---|---|
-| `order` | no | Preserved from export, not used for rendering |
-| `id` | no | Used when present, otherwise a generated id is created |
-| `date` | yes | Used with `time` to build timestamps |
-| `time` | yes | Used with `date` to build timestamps |
-| `title` | no | Displayed in the timeline |
-| `url` | yes | Used for domain extraction and outbound links |
-| `visitCount` | no | Not currently displayed |
-| `typedCount` | no | Not currently displayed |
-| `transition` | no | Parsed and stored, not currently displayed |
-
-Example:
-
-```csv
-order,id,date,time,title,url,visitCount,typedCount,transition
-1,123,2026-04-18,09:54,Product Overview,https://demo-site.com/overview,1,0,link
-2,124,2026-04-18,09:55,Team Workspace,https://workspace.example/home,1,0,link
-```
 
 ## Data Persistence
 
@@ -132,54 +100,6 @@ Important caveat:
 
 - links in the timeline are clickable and open the original URLs in a new tab
 - uploaded CSV contents remain in IndexedDB until cleared
-- this is a visualization tool, not a redaction or anonymization layer
-
-If you are preparing a demo, use anonymized history data or a sanitized screenshot.
-
-## Project Structure
-
-```text
-src/
-  components/
-    DatePicker.tsx
-    HistoryUpload.tsx
-    Timeline.tsx
-  lib/
-    parser.ts
-    storage.ts
-    types.ts
-  App.tsx
-  main.tsx
-public/
-  favicon.svg
-  icons.svg
-Screenshot.jpg
-```
-
-Key files:
-
-- [src/App.tsx](./src/App.tsx): application state, startup flow, upload handling, and hash-based date navigation
-- [src/components/Timeline.tsx](./src/components/Timeline.tsx): session timeline rendering
-- [src/components/HistoryUpload.tsx](./src/components/HistoryUpload.tsx): drag-and-drop/file picker upload UI
-- [src/lib/parser.ts](./src/lib/parser.ts): CSV parsing, domain extraction, exclusion filtering, and session grouping
-- [src/lib/storage.ts](./src/lib/storage.ts): IndexedDB persistence for uploaded CSV content
-- [src/lib/types.ts](./src/lib/types.ts): shared data contracts
-
-## Available Scripts
-
-```bash
-npm run dev
-npm run lint
-npm run build
-npm run preview
-```
-
-What they do:
-
-- `npm run dev`: starts the Vite dev server
-- `npm run lint`: runs ESLint across the project
-- `npm run build`: runs TypeScript project build mode and creates a production bundle
-- `npm run preview`: serves the built output locally
 
 ## Current Behavior and Limitations
 
